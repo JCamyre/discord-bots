@@ -11,8 +11,9 @@ client = discord.Client()
 
 @client.event
 async def on_ready():
-	# Pass in a function to search through the guilds the bot is in
+	# get(iterable, keyword=val) client.guilds[0].name == GUILD
 	guild = discord.utils.get(client.guilds, name=GUILD) # This is the current guild/server the bot is in
+	# Still builds a predicate (a function for finding a characteristic in an iterable)
  
 	# This is for developers to see what server our bot is connected to via the console
 	print(f'{client.user} has connected to the following guild:\n'
