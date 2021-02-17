@@ -25,22 +25,30 @@ async def yo(ctx):
 # async def members(ctx):
 # 	members = '\n - '.join([member.name for member in guild.members])
 # 	await print(f'Guild Members:\n - {members}')
-mul_2 = lambda x: int(x)*2
+custom_int = lambda x: int(x)
 
 @bot.command(name='dice', help='Rolls a dice with specificied number of sides.')
-async def dice(ctx, sides: mul_2):
-	await ctx.send('Rolling...')
-	await ctx.send(random.choice(range(1, sides+1)))
+async def dice(ctx, sides: custom_int):
+	try:
+		await ctx.send('Rolling...')
+		await ctx.send(random.choice(range(1, sides+1)))
+	except:
+		await ctx.send("Don't forget to add the # of dice sides.")
 
 @bot.command(name='create-channel')
 @commands.has_role('admin')
 async def create_channel(ctx, channel_name='yo'):
 	guild = ctx.guild
 	existing_channel = discord.utils.get(guild.channels, name=channel_name) # Search through this guild's channels to see if this new channel name already exists
-	
+	if not existing_channel:
+		print(f'Creating a new channel: {channel_name}')
+		await guild.create_text_channel(channel_name)
 # yo(ctx, *, args): print(args). !yo testing testing cciv
 # $stock cciv
 
-
+@bot.event
+async def on_command_error(ctx, error):
+	if isinstance(error, commands.errors.MissingRequiredArgument):
+		await ctx.send('You forgot to type something!')
 
 bot.run(TOKEN)
