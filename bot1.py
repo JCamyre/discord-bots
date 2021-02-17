@@ -49,6 +49,6 @@ async def create_channel(ctx, channel_name='yo'):
 @bot.event
 async def on_command_error(ctx, error):
 	if isinstance(error, commands.errors.MissingRequiredArgument):
-		await ctx.send('You forgot to type something!')
+		await ctx.send(f'You forgot to type something! <@{ctx.author.id}>')
 
 bot.run(TOKEN)
