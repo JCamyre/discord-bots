@@ -57,8 +57,11 @@ async def on_error(event, *args, **kwargs):
 		else:
 			raise # If any other error besides on_message, raise the error so we see it in the console
 
-@bot.command(name='yo')
+@bot.command(name='yo', help="Sends yo and @'s the user")
 async def yo(ctx):
 	await ctx.send(f'yo {ctx.user}')
+
+# yo(ctx, *, args): print(args). !yo testing testing cciv
+# $stock cciv
 
 bot.run(TOKEN)
