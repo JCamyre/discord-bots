@@ -29,11 +29,8 @@ custom_int = lambda x: int(x)
 
 @bot.command(name='dice', help='Rolls a dice with specificied number of sides.')
 async def dice(ctx, sides: custom_int):
-	try:
-		await ctx.send('Rolling...')
-		await ctx.send(random.choice(range(1, sides+1)))
-	except:
-		await ctx.send("Don't forget to add the # of dice sides.")
+	await ctx.send('Rolling...')
+	await ctx.send(str(random.choice(range(1, sides+1))) + f' <@{ctx.author.id}>')
 
 @bot.command(name='create-channel')
 @commands.has_role('admin')
