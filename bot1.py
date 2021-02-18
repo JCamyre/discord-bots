@@ -2,10 +2,10 @@ import os
 import re 
 import sys 
 import random
-import yfinance as yf
+import py_trading as pytrade
 
 # Import my Stock trading module
-
+# Have a unique portfolio for each user
 
 from discord.ext import commands
 import discord
@@ -50,11 +50,16 @@ async def create_channel(ctx, channel_name='yo'):
 
 @bot.command(name='stock')
 async def stock(ctx, ticker: str):
-	ticker = yf.Ticker(ticker)
+	ticker = pytrade.Stock(ticker)
 	try:
-		print(ticker.info
+		ctx.send(ticker.info)
 	except:
 		on_command_error(ctx, 'Ticker does not exist')
+
+@bot.command(name='portfolio')
+async def stock(ctx, action, stock):
+	# Need database for storing all users' portfolios
+	if action == 'remove':
 
 
 @bot.event
