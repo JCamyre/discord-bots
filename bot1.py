@@ -2,11 +2,16 @@ import os
 import re 
 import sys 
 import random
+import yfinance as yf
+
+# Import my Stock trading module
+
 
 from discord.ext import commands
 import discord
 
 from dotenv import load_dotenv 
+
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -43,9 +48,19 @@ async def create_channel(ctx, channel_name='yo'):
 # yo(ctx, *, args): print(args). !yo testing testing cciv
 # $stock cciv
 
+@bot.command(name='stock')
+async def stock(ctx, ticker: str):
+	ticker = yf.Ticker(ticker)
+	try:
+		print(ticker.info
+	except:
+		on_command_error(ctx, 'Ticker does not exist')
+
+
 @bot.event
 async def on_command_error(ctx, error):
 	if isinstance(error, commands.errors.MissingRequiredArgument):
 		await ctx.send(f'You forgot to type something! <@{ctx.author.id}>')
+
 
 bot.run(TOKEN)
