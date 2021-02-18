@@ -59,8 +59,8 @@ async def stock(ctx, ticker: str):
 @bot.command(name='portfolio')
 async def stock(ctx, action, stock):
 	# Need database for storing all users' portfolios
-	if action == 'remove':
-
+	# if action == 'remove':
+	pass
 
 @bot.event
 async def on_command_error(ctx, error):
