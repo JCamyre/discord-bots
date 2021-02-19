@@ -11,7 +11,7 @@ multidict==5.1.0
 multitasking==0.0.9
 numpy==1.20.1
 pandas==1.2.2
-Py-Trading==0.0.4
+Py-Trading==0.0.4b0
 python-dateutil==2.8.1
 python-dotenv==0.15.0
 pytz==2021.1
