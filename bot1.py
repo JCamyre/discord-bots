@@ -4,6 +4,7 @@ import sys
 import random
 import py_trading as pytrade
 from replit import db 
+from keep_alive import keep_alive
 
 
 # Import my Stock trading module
@@ -17,7 +18,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-# GUILD = os.getenv('DISCORD_GUILD')
 
 intents = discord.Intents.default() # "Due to an API change Discord is now forcing developers who want member caching to explicitly opt-in to it. This is a Discord mandated change and there is no way to bypass it. In order to get members back you have to explicitly enable the members privileged intent and change the Intents.members attribute to true."
 intents.members = True
@@ -66,13 +66,47 @@ async def portfolio(ctx, action, *stocks: str):
 
 def update_portfolios(user: str, action, stocks: list): # stocks should be 'cciv cvii ccvi' 
     # Update stocks whenever portfolio is called
+    if not user in db.keys():
+        db[user] = list()
+
     if action == 'add':
         cur_stocks = db[user]
         new_stocks = list(stocks)
         unique_stocks = set(cur_stocks + new_stocks)
         db[user] = list(unique_stocks)
+    elif action == 'remove':
+        cur_stocks = db[user]
+        for stock in stocks:
+            if stock in cur_stocks:
+                cur_stocks.remove(stock)
+        db[user] = cur_stocks
+    elif action == 'view':
+        pass
+    else:
+        raise commands.errors.MissingRequiredArgument
+
+    return pytrade.Portfolio(db[user]).get_stocks()
+
+# Have a command for mentioning a ticker, maybe bullish or bearish too
+@bot.command('bull', help='Add a ticker to indicate that you are bullish on that stock.') # Make it unique, only once per user
+async def bullish(ctx, ticker: lambda x: str(x).upper()):
+    if not ticker in db.keys():
+        db[ticker] = dict()
+    sentiment = db[ticker]
+    user = ctx.author.id 
+    sentiment[user] = 1
+    db[ticker] = sentiment
+    await ctx.send(f'Overall sentiment for ${ticker}: {db[ticker]} (positive is bull)')
     
-    return pytrade.Portfolio(db[user]).get_stocks_daily()
+@bot.command('bear', help='Add a ticker to indicate that you are bearish on that stock.')
+async def bearish(ctx, ticker: lambda x: str(x).upper()):
+    if not ticker in db.keys():
+        db[ticker] = dict()
+    sentiment = db[ticker]
+    user = ctx.author.id 
+    sentiment[user] = -1
+    db[ticker] = sentiment
+    await ctx.send(f'Overall sentiment for ${ticker}: {db[ticker]} (positive is bull)')
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -80,5 +114,5 @@ async def on_command_error(ctx, error):
         await ctx.send(f'You forgot to type something! <@{ctx.author.id}>')
     print(error)
 
-
+keep_alive()
 bot.run(TOKEN)
